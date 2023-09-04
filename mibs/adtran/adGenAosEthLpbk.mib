@@ -1,0 +1,239 @@
+ADTRAN-AOS-ETH-LPBK-MIB    DEFINITIONS ::= BEGIN
+
+--  TITLE:      THE ADTRAN OPERATING SYSTEM ETHERERNET LOOPBACK
+--              TERMINAL/FACILITY MIB
+--  FILENAME:   AdGenAosEthLpbk.mib
+--  AUTHOR:     Manoj Saladi
+--  DATE:       23/12/2019
+
+--  HISTORY
+--  23/12/2019  First draft.
+
+IMPORTS
+    MODULE-IDENTITY,
+    OBJECT-TYPE, Unsigned32, Integer32
+           FROM SNMPv2-SMI
+    ifIndex
+           FROM IF-MIB
+    MODULE-COMPLIANCE,
+    OBJECT-GROUP
+           FROM SNMPv2-CONF 
+    TEXTUAL-CONVENTION,
+    DisplayString,
+    MacAddress,
+    TruthValue
+           FROM SNMPv2-TC     -- [RFC2579]
+    adIdentity
+           FROM ADTRAN-MIB
+    adGenAOS,
+    adGenAOSMef,
+    adGenAOSConformance
+           FROM ADTRAN-AOS;
+
+
+adGenAosEthLpbkMib    MODULE-IDENTITY
+        LAST-UPDATED "201812230000Z"
+        ORGANIZATION "ADTRAN, Inc."
+        CONTACT-INFO
+                "Technical Support Dept.
+                 Postal: ADTRAN, Inc.
+                         901 Explorer Blvd.
+                         Huntsville, AL 35806
+
+                         Tel: +1 800 726-8663
+                         Fax: +1 256 963 6217
+                         E-mail: support@adtran.com"
+        DESCRIPTION
+                "The MIB module defines Ethernet Loopback Terminal/Facility
+                 Details for AdtranOS and its products."
+        ::= { adIdentity 10000 53 9 10 }
+
+
+-- OBJECT IDENTIFIERS
+
+    adGenAosEthLpbk OBJECT IDENTIFIER ::= { adGenAOSMef 10 }
+
+--
+-- Conformance information
+--
+
+adGenAosEthLpbkConformance OBJECT IDENTIFIER
+   ::= { adGenAOSConformance 35 }
+
+adGenAosEthLpbkGroups OBJECT IDENTIFIER
+   ::= { adGenAosEthLpbkConformance 1 }
+
+adGenAosEthLpbkCompliances OBJECT IDENTIFIER
+   ::= { adGenAosEthLpbkConformance 2 }
+
+
+--
+-- adGenAosEthLpbk Info
+--
+
+adGenAosEthLpbkTable OBJECT-TYPE 
+    SYNTAX SEQUENCE OF AdGenAosEthLpbkEntry
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+      "This table contains ethernet loopback terminal/facility configuration
+       information"
+    ::= {adGenAosEthLpbk 1}
+
+adGenAosEthLpbkEntry OBJECT-TYPE
+    SYNTAX AdGenAosEthLpbkEntry
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+      "The parameters of Ethernet Loopback"
+    INDEX { adGenAosEthLpbkNameFixedLen }
+    ::= { adGenAosEthLpbkTable 1 }
+
+AdGenAosEthLpbkEntry ::=
+    SEQUENCE {
+        adGenAosEthLpbkNameFixedLen   OCTET STRING,
+        adGenAosEthLpbkName           DisplayString,
+        adGenAosEthLpbkSTag           Integer32,
+        adGenAosEthLpbkMacDa          MacAddress,
+        adGenAosEthLpbkSysMacDa       TruthValue,
+        adGenAosEthLpbkCfgStatus      DisplayString,
+        adGenAosEthLpbkType           INTEGER,
+        adGenAosEthLpbkIfName         DisplayString,
+        adGenAosEthLpbkAdminStatus    TruthValue,
+        adGenAosEthLpbkOperStatus     TruthValue,
+        adGenAosEthLpbkIfIndex        Integer32
+    } 
+
+adGenAosEthLpbkNameFixedLen OBJECT-TYPE
+    SYNTAX      OCTET STRING (SIZE (50))
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+      "The name of the Eternet Loopback.  This string is padded at the 
+       end with 0x00 so that this table index has a fixed length of characters
+       of the specified SIZE."
+    ::= { adGenAosEthLpbkEntry 1 }
+
+adGenAosEthLpbkName OBJECT-TYPE
+    SYNTAX      DisplayString (SIZE (0..255))
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+      "A textual String containing Ethernet Loopback Name"
+    ::= { adGenAosEthLpbkEntry 2 }
+
+adGenAosEthLpbkSTag OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+      "Match S-Tag Value"
+    ::= { adGenAosEthLpbkEntry 3 }
+
+adGenAosEthLpbkMacDa OBJECT-TYPE
+    SYNTAX MacAddress
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+      "Match Mac Address Value"
+    ::= { adGenAosEthLpbkEntry 4 }
+
+adGenAosEthLpbkSysMacDa OBJECT-TYPE
+    SYNTAX TruthValue
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+      "This is to enable/disable loopback based on system MAC as destination
+       mac-address match"
+    ::= { adGenAosEthLpbkEntry 5 }
+
+adGenAosEthLpbkCfgStatus OBJECT-TYPE
+    SYNTAX DisplayString (SIZE (0..255))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+      "A textual string representing Ethernet Loopback configuration Status"
+    ::= { adGenAosEthLpbkEntry 6 }
+
+adGenAosEthLpbkType OBJECT-TYPE
+    SYNTAX INTEGER
+           {
+              none (0),
+              facility (1),
+              terminal (2)
+           }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+      "A textual string representing the type of Ethernet Loopback"
+    ::= { adGenAosEthLpbkEntry 7 }
+
+adGenAosEthLpbkIfName OBJECT-TYPE
+    SYNTAX DisplayString (SIZE (0..255))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+      "A textual string representing interface attached to the Ethernet
+       Loopback"
+    ::= { adGenAosEthLpbkEntry 8 }
+
+adGenAosEthLpbkAdminStatus OBJECT-TYPE
+    SYNTAX TruthValue
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+      "It represents the admin status of Ethernet Loopback"
+    ::= { adGenAosEthLpbkEntry 9 }
+
+adGenAosEthLpbkOperStatus OBJECT-TYPE
+    SYNTAX TruthValue
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+      "It represents the operational status of Ethernet Loopback"
+    ::= { adGenAosEthLpbkEntry 10 }
+
+adGenAosEthLpbkIfIndex OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+      "It represents the interface index which is attached to the Ethernet
+       Loopback"
+    ::= { adGenAosEthLpbkEntry 11 }
+
+
+-- Full compliance statement
+  adGenAosEthLpbkCompliance MODULE-COMPLIANCE
+      STATUS  current
+      DESCRIPTION
+      "The compliance statement for ETH-LPBK entities which implement
+      the adGenAOSMef MIB."
+
+      MODULE  -- this module
+
+      GROUP  adGenAosEthLpbkStatsGroup
+      DESCRIPTION
+         "This optional group defines the notification generated by  events."
+      ::= { adGenAosEthLpbkCompliances 1 }
+
+  adGenAosEthLpbkStatsGroup OBJECT-GROUP
+      OBJECTS {
+           adGenAosEthLpbkName,
+           adGenAosEthLpbkSTag,
+           adGenAosEthLpbkMacDa,
+           adGenAosEthLpbkSysMacDa,
+           adGenAosEthLpbkCfgStatus,
+           adGenAosEthLpbkType,
+           adGenAosEthLpbkIfName,
+           adGenAosEthLpbkAdminStatus,
+           adGenAosEthLpbkOperStatus,
+           adGenAosEthLpbkIfIndex
+      }
+      STATUS  current
+      DESCRIPTION
+         "A collection of objects that indicate the configuration parameters of
+          Ethernet Loopback."
+      ::= { adGenAosEthLpbkGroups 1 }
+
+END
