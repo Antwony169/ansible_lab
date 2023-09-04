@@ -1,3 +1,12 @@
-zsense02
-zsense03
-zsense04
+zabbix.bowerssystems.net
+zsense02.bowerssystems.net
+zsense03.bowerssystems.net
+zsense04.bowerssystems.net
+
+[servers]
+zabbix.bowerssystems.net
+
+[proxies]
+zsense02.bowerssystems.net
+zsense03.bowerssystems.net
+zsense04.bowerssystems.net
